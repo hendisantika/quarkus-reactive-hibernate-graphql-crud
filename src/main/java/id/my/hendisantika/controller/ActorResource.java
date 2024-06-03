@@ -1,5 +1,6 @@
 package id.my.hendisantika.controller;
 
+import id.my.hendisantika.control.exception.AlreadyExistingException;
 import id.my.hendisantika.dto.ActorDTO;
 import id.my.hendisantika.dto.MovieDTO;
 import id.my.hendisantika.entity.Actor;
@@ -7,6 +8,7 @@ import id.my.hendisantika.entity.ActorMovieEntity;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
+import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
 import org.eclipse.microprofile.graphql.Source;
@@ -41,5 +43,12 @@ public class ActorResource {
     public Uni<List<MovieDTO>> movies(@Source(name = "ActorResponse") ActorDTO actor) {
         return ActorMovieEntity.getMoviesByActorQuery(actor.id).onItem().transform(actorMovieEntity ->
                 actorMovieEntity.movie).collect().asList().onItem().transform(MovieDTO::from);
+    }
+
+    @Mutation
+    @Description("Add movie to actor")
+    public Uni<ActorDTO> addMovieToActor(@Name("movieId") long movieId, @Name("actorId") long actorId) {
+        return Actor.addMovieToActor(movieId, actorId).onItem().transform(ActorDTO::from).onFailure().
+                transform(throwable -> new AlreadyExistingException("movieId: " + movieId + " and actorId: " + actorId));
     }
 }
