@@ -5,6 +5,7 @@ import id.my.hendisantika.entity.Actor;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
 
 import java.util.List;
@@ -26,5 +27,11 @@ public class ActorResource {
     public Uni<List<ActorDTO>> getAllActors() {
         return Actor.getAllActors()
                 .onItem().transform(ActorDTO::from);
+    }
+
+    @Query
+    @Description("Get an actor")
+    public Uni<ActorDTO> getActor(@Name("actorId") long id) {
+        return Actor.findByActorId(id).onItem().transform(ActorDTO::from);
     }
 }
