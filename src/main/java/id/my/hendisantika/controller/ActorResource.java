@@ -1,12 +1,15 @@
 package id.my.hendisantika.controller;
 
 import id.my.hendisantika.dto.ActorDTO;
+import id.my.hendisantika.dto.MovieDTO;
 import id.my.hendisantika.entity.Actor;
+import id.my.hendisantika.entity.ActorMovieEntity;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
+import org.eclipse.microprofile.graphql.Source;
 
 import java.util.List;
 
@@ -33,5 +36,10 @@ public class ActorResource {
     @Description("Get an actor")
     public Uni<ActorDTO> getActor(@Name("actorId") long id) {
         return Actor.findByActorId(id).onItem().transform(ActorDTO::from);
+    }
+
+    public Uni<List<MovieDTO>> movies(@Source(name = "ActorResponse") ActorDTO actor) {
+        return ActorMovieEntity.getMoviesByActorQuery(actor.id).onItem().transform(actorMovieEntity ->
+                actorMovieEntity.movie).collect().asList().onItem().transform(MovieDTO::from);
     }
 }
