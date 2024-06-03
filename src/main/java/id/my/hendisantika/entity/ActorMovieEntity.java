@@ -1,5 +1,6 @@
 package id.my.hendisantika.entity;
 
+
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.smallrye.mutiny.Multi;
 import jakarta.persistence.Cacheable;
@@ -20,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
 
 /**
  * Created by IntelliJ IDEA.
