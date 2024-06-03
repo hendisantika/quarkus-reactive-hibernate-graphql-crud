@@ -1,6 +1,13 @@
 package id.my.hendisantika.controller;
 
+import id.my.hendisantika.dto.ActorDTO;
+import id.my.hendisantika.entity.Actor;
+import io.smallrye.mutiny.Uni;
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
+import org.eclipse.microprofile.graphql.Query;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,4 +21,10 @@ import org.eclipse.microprofile.graphql.GraphQLApi;
  */
 @GraphQLApi
 public class ActorResource {
+    @Query("allActors")
+    @Description("Get all Actors")
+    public Uni<List<ActorDTO>> getAllActors() {
+        return Actor.getAllActors()
+                .onItem().transform(ActorDTO::from);
+    }
 }
